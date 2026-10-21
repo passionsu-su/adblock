@@ -1,7 +1,7 @@
 # Title: AdBlock MosDNS (custom)
 # Based on 217heidai/adblockfilters adblockmosdns.txt (Version 20261021213703)
 # Removed sources: OISD Basic, AWAvenue Ads Rule, EasyPrivacy, CJX's Annoyance List, xinggsf mv, DNS-Blocklists PRO mini
-# Last modified: 2026-10-21 17:32 UTC
+# Last modified: 2026-10-21 19:28 UTC
 # Blocked domains: 195912
 00000.uno
 000491b06a.com
