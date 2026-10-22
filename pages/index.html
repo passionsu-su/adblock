@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>去广告规则一键复制</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&display=swap"
+    />
+    <link rel="stylesheet" href="hark.css" />
+    <link rel="stylesheet" href="hark-hero.css" />
+    <style>
+      .x-act { cursor: pointer; flex: none; }
+      .x-search-wrap { display: grid; gap: 8px; }
+      .x-search {
+        width: 100%;
+        min-height: var(--tap);
+        padding: 10px 16px;
+        border-radius: var(--r-s);
+        border: 1px solid var(--stroke-primary);
+        background: var(--fill-primary-on);
+        color: var(--text-primary);
+        font: var(--weight-regular) var(--size-prose)/var(--lh) var(--sans);
+      }
+      .x-search::placeholder { color: var(--text-secondary); }
+      .x-search:focus { outline: 2px solid var(--text-primary); outline-offset: 1px; }
+      .x-group + .x-group { margin-top: 28px; }
+      .x-group__title {
+        display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+        font: var(--type-body-strong);
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--stroke-primary);
+      }
+      .x-group__title small { color: var(--text-secondary); font: var(--type-caption); }
+      .x-list { list-style: none; margin: 0; padding: 0; }
+      .x-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px 16px;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--stroke-secondary);
+      }
+      .x-row:last-child { border-bottom: 0; }
+      .x-row__label { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font: var(--type-label); }
+      .x-row__url {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        overflow-wrap: anywhere;
+        word-break: break-all;
+        margin-top: 4px;
+        font: var(--type-caption);
+        color: var(--text-secondary);
+      }
+      .x-row__acts { display: flex; gap: 8px; align-items: center; }
+      .callout .x-row { padding: 8px 0; }
+      @media (max-width: 599px) {
+        .x-row__acts { flex-direction: column; align-items: stretch; }
+        .x-row__acts .btn { justify-content: center; }
+        .x-row__url { -webkit-line-clamp: 3; }
+      }
+      .x-empty[hidden], .x-row[hidden], .x-group[hidden] { display: none; }
+      .x-toast {
+        position: fixed;
+        left: 50%;
+        bottom: calc(24px + env(safe-area-inset-bottom));
+        transform: translate(-50%, 12px);
+        z-index: 1000;
+        padding: 10px 18px;
+        border-radius: var(--r-pill);
+        background: var(--fill-primary);
+        color: var(--text-primary-on);
+        font: var(--type-label);
+        box-shadow: var(--hark-shadow);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--dur-quick) var(--ease-out), transform var(--dur-quick) var(--ease-out);
+      }
+      .x-toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+      .x-modal {
+        position: fixed; inset: 0; z-index: 1001;
+        display: grid; place-items: center;
+        padding: var(--gutter);
+        background: color-mix(in srgb, var(--fill-primary) 45%, transparent);
+      }
+      .x-modal[hidden] { display: none; }
+      .x-modal__panel {
+        width: min(560px, 100%);
+        display: grid; gap: 12px;
+        padding: 18px;
+        border-radius: var(--r-l);
+        background: var(--fill-primary-on);
+        border: 1px solid var(--stroke-primary);
+        box-shadow: var(--hark-shadow);
+      }
+      .x-modal__panel h3 { font: var(--type-heading); }
+      .x-modal textarea {
+        width: 100%;
+        min-height: 40vh;
+        padding: 12px;
+        border-radius: var(--r-s);
+        border: 1px solid var(--stroke-primary);
+        background: var(--fill-tertiary);
+        color: var(--text-primary);
+        font: var(--type-small);
+        resize: vertical;
+      }
+      .x-code { overflow-wrap: anywhere; word-break: break-all; }
+    </style>
+  </head>
+  <body>
+    <div class="page" id="top">
+      <header class="nav glass" data-auto></header>
+      <main class="main">
+        <section class="hero">
+          <div class="hero__copy">
+            <p class="hero__eyebrow">passionsu-su/adblock</p>
+            <h1>去广告规则一键复制</h1>
+            <p class="hero__sub">点一下就复制，粘到客户端里即可</p>
+            <p class="hero__meta">AdGuard · Clash Meta / mihomo · Shadowrocket · 共 <span id="total">—</span> 条链接</p>
+          </div>
+          <aside class="callout" aria-label="仓库规则文件">
+            <p class="callout__head">仓库规则文件</p>
+            <ul class="x-list" id="repo-files"></ul>
+            <a class="btn" href="https://github.com/passionsu-su/adblock" target="_blank" rel="noopener">打开 GitHub 仓库</a>
+          </aside>
+        </section>
+
+        <div class="x-search-wrap">
+          <input id="q" class="x-search" type="search" placeholder="搜索名称或链接，如 HaGeZi、mrs、anti-ad" aria-label="按名称或链接搜索规则" autocomplete="off" />
+          <p class="fineprint" id="q-count" aria-live="polite"></p>
+        </div>
+
+        <section class="section" id="adguard" data-nav="AdGuard">
+          <div class="head">
+            <p class="head__eyebrow">AdGuard / AdGuard Home</p>
+            <h2>4 条推荐组合日常够用，其余按需添加。</h2>
+            <p class="head__sub">AdGuard Home → 过滤器 → DNS 黑名单 → 添加自定义列表，逐条粘贴。浏览器级规则只在 AdGuard App / 浏览器扩展里完全生效。</p>
+          </div>
+          <aside class="callout" aria-label="复制推荐组合">
+            <p class="callout__head">推荐组合</p>
+            <p class="callout__lead"><strong>一次复制 4 条链接，</strong>每行一条。</p>
+            <div class="links"><button type="button" class="btn x-act" data-rec="adguard">复制推荐组合</button></div>
+          </aside>
+          <div class="x-groups" data-client="adguard"></div>
+          <p class="fineprint x-empty" hidden>这一栏没有匹配的链接。</p>
+        </section>
+
+        <section class="section" id="clash" data-nav="Clash">
+          <div class="head">
+            <p class="head__eyebrow">Clash Meta / mihomo</p>
+            <h2>合并 rule-providers，再把 rules 几行放到最前面。</h2>
+            <p class="head__sub">.mrs 只有 mihomo 支持，Stash 请用 yaml/text 源。多个超大域名集同开会明显吃内存（尤其 Sukka 基础 + extra）。</p>
+          </div>
+          <aside class="callout" aria-label="复制推荐组合或完整配置">
+            <p class="callout__head">推荐组合</p>
+            <p class="callout__lead"><strong>5 条推荐链接，</strong>或直接复制整份 adblock.yaml。</p>
+            <div class="links">
+              <button type="button" class="btn x-act" data-rec="clash">复制推荐组合</button>
+              <button type="button" class="btn x-act" id="copy-yaml">复制完整 rule-providers 配置</button>
+            </div>
+            <p class="fineprint">完整配置默认只开推荐组合，其余已注释，需要时去掉 #。</p>
+          </aside>
+          <div class="x-groups" data-client="clash"></div>
+          <p class="fineprint x-empty" hidden>这一栏没有匹配的链接。</p>
+        </section>
+
+        <section class="section" id="shadowrocket" data-nav="Shadowrocket">
+          <div class="head">
+            <p class="head__eyebrow">Shadowrocket</p>
+            <h2>整行规则粘到 [Rule] 段最前，IP 类那行放到 FINAL 前。</h2>
+            <p class="head__sub">RULE-SET 是逐行规则，DOMAIN-SET 是纯域名集。规则太多会拖慢网络扩展，一般 3～5 条足够。</p>
+          </div>
+          <aside class="callout" aria-label="复制推荐组合">
+            <p class="callout__head">推荐组合</p>
+            <p class="callout__lead"><strong>一次复制 5 行规则，</strong>可直接粘进 [Rule]。</p>
+            <div class="links"><button type="button" class="btn x-act" data-rec="sr">复制推荐组合</button></div>
+            <p class="fineprint">最后一行是 IP 类，粘完后挪到 FINAL 前。</p>
+          </aside>
+          <div class="x-groups" data-client="sr"></div>
+          <p class="fineprint x-empty" hidden>这一栏没有匹配的链接。</p>
+        </section>
+
+        <section class="section" id="tips" data-nav="提示">
+          <div class="head"><h2>少即是多：同类只开一个。</h2></div>
+          <div class="cards">
+            <div>
+              <h3>同类大列表别全开</h3>
+              <p>HaGeZi Pro / Ultimate、OISD Big / Small 各选一个，全开会大量重复、拖慢查询。</p>
+            </div>
+            <div>
+              <h3>anti-AD 拉不到</h3>
+              <p>anti-ad.net 有 Cloudflare 验证，拉不到时用列表里的 GitHub 源。</p>
+            </div>
+            <div>
+              <h3>大陆访问慢</h3>
+              <p>GitHub raw 链接可换 jsDelivr：</p>
+              <p class="x-code"><code>https://cdn.jsdelivr.net/gh/&lt;用户&gt;/&lt;仓库&gt;@&lt;分支&gt;/&lt;路径&gt;</code></p>
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer class="foot">
+        <p>链接取自 passionsu-su/adblock 仓库的 filters.txt、adblock.yaml、adblock.conf。</p>
+        <nav aria-label="回到各部分" data-auto></nav>
+        <a class="badge" href="https://hark.com/" target="_blank" rel="noopener"><span class="hark-mark"></span><span>built by hark</span></a>
+      </footer>
+    </div>
+
+    <div class="x-toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="x-modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="x-modal__panel">
+        <h3 id="modal-title">长按下面的文字复制</h3>
+        <p class="fineprint">浏览器拦截了自动复制，文字已全选。</p>
+        <textarea id="modal-text" spellcheck="false"></textarea>
+        <div class="links"><button type="button" class="btn x-act" id="modal-close">关闭</button></div>
+      </div>
+    </div>
+
+<script type="text/plain" id="clash-yaml"># Clash Meta / mihomo 去广告规则合集
+# 用法：把 rule-providers 段合并进你的配置，再把 rules 段的几行放到 rules: 最前面
+# 默认只开推荐组合；其余已注释，需要时去掉 # 即可
+# 注意：Clash 同时加载多个超大域名集会明显吃内存、拖慢匹配（尤其 sukka 基础 + extra 同开）
+#       .mrs 为二进制格式，只有 mihomo 支持；原版 Clash / Clash Premium 请用 yaml/text 版本
+
+rule-providers:
+  # ===== 推荐组合 =====
+  cn-ads:                       # 217heidai 合并规则（国内友好）
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockmihomo.mrs
+    path: ./ruleset/cn-ads.mrs
+    interval: 86400
+
+  reject_non_ip:                # Sukka 非 IP 类
+    type: http
+    behavior: classical
+    format: text
+    url: https://ruleset.skk.moe/Clash/non_ip/reject.txt
+    path: ./sukkaw_ruleset/reject_non_ip.txt
+    interval: 43200
+
+  reject_domainset:             # Sukka 域名集
+    type: http
+    behavior: domain
+    format: text
+    url: https://ruleset.skk.moe/Clash/domainset/reject.txt
+    path: ./sukkaw_ruleset/reject_domainset.txt
+    interval: 43200
+
+  reject_ip:                    # Sukka IP 类
+    type: http
+    behavior: classical
+    format: text
+    url: https://ruleset.skk.moe/Clash/ip/reject.txt
+    path: ./sukkaw_ruleset/reject_ip.txt
+    interval: 43200
+
+  app-ads:                      # blackmatrix7 Advertising（App 广告，带关键词）
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising.yaml
+    path: ./ruleset/app-ads.yaml
+    interval: 86400
+
+  # ===== 可选（按需去掉注释）=====
+  # cn-ads-lite:                # 217heidai Lite，路由器/低内存设备用
+  #   type: http
+  #   behavior: domain
+  #   format: mrs
+  #   url: https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockmihomolite.mrs
+  #   path: ./ruleset/cn-ads-lite.mrs
+  #   interval: 86400
+
+  # anti-ads:                   # anti-AD（anti-ad.net 有 Cloudflare 验证，拉不到就换下面 GitHub 源）
+  #   type: http
+  #   behavior: domain
+  #   url: https://anti-ad.net/clash.yaml
+  #   # url: https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-clash.yaml
+  #   path: ./ruleset/anti-ads.yaml
+  #   interval: 86400
+
+  # privacy:                    # blackmatrix7 隐私追踪
+  #   type: http
+  #   behavior: classical
+  #   url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Privacy/Privacy.yaml
+  #   path: ./ruleset/privacy.yaml
+  #   interval: 86400
+
+  # adrules:                    # Cats-Team AdRules
+  #   type: http
+  #   behavior: domain
+  #   format: mrs
+  #   url: https://raw.githubusercontent.com/Cats-Team/AdRules/main/adrules-mihomo.mrs
+  #   path: ./ruleset/adrules.mrs
+  #   interval: 86400
+
+  # rule-merger:                # xndeye 合并 reject
+  #   type: http
+  #   behavior: domain
+  #   format: mrs
+  #   url: https://raw.githubusercontent.com/xndeye/rule-merger/refs/heads/release/reject.mrs
+  #   # yaml 版：https://raw.githubusercontent.com/xndeye/rule-merger/refs/heads/release/reject.yaml
+  #   path: ./ruleset/rule-merger.mrs
+  #   interval: 86400
+
+  # reject:                     # Loyalsoldier
+  #   type: http
+  #   behavior: domain
+  #   url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt
+  #   path: ./ruleset/reject.yaml
+  #   interval: 86400
+
+  # surfboard-ad:
+  #   type: http
+  #   behavior: domain
+  #   format: text
+  #   url: https://getsurfboard.com/adblock.txt
+  #   path: ./ruleset/surfboard-ad.txt
+  #   interval: 86400
+
+  # xkww3n:
+  #   type: http
+  #   behavior: domain
+  #   url: https://rules.xkww3n.cyou/yaml/reject.yaml
+  #   path: ./ruleset/xkww3n.yaml
+  #   interval: 86400
+
+  # neodevhost:
+  #   type: http
+  #   behavior: domain
+  #   url: https://raw.githubusercontent.com/neodevpro/neodevhost/master/clash
+  #   path: ./ruleset/neodevhost.yaml
+  #   interval: 86400
+
+  # awavenue:                   # 秋风广告规则，体积很小
+  #   type: http
+  #   behavior: domain
+  #   format: mrs
+  #   url: https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-Clash.mrs
+  #   path: ./ruleset/awavenue.mrs
+  #   interval: 86400
+
+  # reject_non_ip_no_drop:
+  #   type: http
+  #   behavior: classical
+  #   format: text
+  #   url: https://ruleset.skk.moe/Clash/non_ip/reject-no-drop.txt
+  #   path: ./sukkaw_ruleset/reject_non_ip_no_drop.txt
+  #   interval: 43200
+
+  # reject_non_ip_drop:
+  #   type: http
+  #   behavior: classical
+  #   format: text
+  #   url: https://ruleset.skk.moe/Clash/non_ip/reject-drop.txt
+  #   path: ./sukkaw_ruleset/reject_non_ip_drop.txt
+  #   interval: 43200
+
+  # reject_extra_domainset:     # 与 reject_domainset 同开会很吃内存
+  #   type: http
+  #   behavior: domain
+  #   format: text
+  #   url: https://ruleset.skk.moe/Clash/domainset/reject_extra.txt
+  #   path: ./sukkaw_ruleset/reject_domainset_extra.txt
+  #   interval: 43200
+
+  # sogouinput:                 # 搜狗输入法上报
+  #   type: http
+  #   behavior: classical
+  #   format: text
+  #   url: https://ruleset.skk.moe/Clash/non_ip/sogouinput.txt
+  #   path: ./sukkaw_ruleset/sogouinput.txt
+  #   interval: 43200
+
+  # adguard_block:              # 11 MB，大
+  #   type: http
+  #   behavior: classical
+  #   url: https://raw.githubusercontent.com/AyraHikari/openclash_adguard/main/rules/adguard_block.yaml
+  #   path: ./ruleset/adguard_block.yaml
+  #   interval: 43200
+
+  # adblock:                    # REIJI007，27 MB yaml，建议用 mrs
+  #   type: http
+  #   behavior: domain
+  #   format: mrs
+  #   url: https://raw.githubusercontent.com/REIJI007/AdBlock_Rule_For_Clash/main/adblock_reject.mrs
+  #   # classical yaml 版：https://raw.githubusercontent.com/REIJI007/AdBlock_Rule_For_Clash/main/adblock_reject.yaml
+  #   path: ./ruleset/adblock_reject.mrs
+  #   interval: 86400
+
+  # metacubex-ads:             # MetaCubeX geosite category-ads-all，很小，mihomo 官方规则库
+  #   type: http
+  #   behavior: domain
+  #   format: mrs
+  #   url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ads-all.mrs
+  #   path: ./ruleset/metacubex-ads.mrs
+  #   interval: 86400
+
+  # dustinwin-ads:              # DustinWin ads
+  #   type: http
+  #   behavior: domain
+  #   format: mrs
+  #   url: https://raw.githubusercontent.com/DustinWin/ruleset_geodata/mihomo-ruleset/ads.mrs
+  #   path: ./ruleset/dustinwin-ads.mrs
+  #   interval: 86400
+
+  # app-ads-lite:               # blackmatrix7 AdvertisingLite
+  #   type: http
+  #   behavior: classical
+  #   url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AdvertisingLite/AdvertisingLite.yaml
+  #   path: ./ruleset/app-ads-lite.yaml
+  #   interval: 86400
+
+  # ACL4SSR-BanAD:
+  #   type: http
+  #   behavior: classical
+  #   format: yaml
+  #   url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanAD.yaml
+  #   path: ./rules/ACL4SSR-BanAD.yaml
+  #   interval: 86400
+
+  # ACL4SSR-BanProgramAD:
+  #   type: http
+  #   behavior: classical
+  #   format: yaml
+  #   url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanProgramAD.yaml
+  #   path: ./rules/ACL4SSR-BanProgramAD.yaml
+  #   interval: 86400
+
+  # ACL4SSR-BanEasyListChina:
+  #   type: http
+  #   behavior: classical
+  #   format: yaml
+  #   url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanEasyListChina.yaml
+  #   path: ./rules/ACL4SSR-BanEasyListChina.yaml
+  #   interval: 86400
+
+rules:
+  # 去广告放在最前面
+  - RULE-SET,reject_non_ip,REJECT
+  - RULE-SET,reject_domainset,REJECT
+  - RULE-SET,cn-ads,REJECT
+  - RULE-SET,app-ads,REJECT
+  # 开了上面的可选源，在这里补对应行，例如：
+  # - RULE-SET,anti-ads,REJECT
+  # - RULE-SET,privacy,REJECT
+  # - RULE-SET,reject_non_ip_drop,REJECT-DROP
+  # - RULE-SET,reject_non_ip_no_drop,REJECT
+  # - RULE-SET,ACL4SSR-BanProgramAD,REJECT
+  # ……你原来的分流规则……
+  # IP 类规则放在域名规则之后、MATCH 之前
+  - RULE-SET,reject_ip,REJECT
+</script>
+
+    <script src="hark.js"></script>
+    <script>
+      var REPO = [
+        ["AdGuard", "adguard/filters.txt", "https://raw.githubusercontent.com/passionsu-su/adblock/main/adguard/filters.txt"],
+        ["Clash", "clash/adblock.yaml", "https://raw.githubusercontent.com/passionsu-su/adblock/main/clash/adblock.yaml"],
+        ["Shadowrocket", "shadowrocket/adblock.conf", "https://raw.githubusercontent.com/passionsu-su/adblock/main/shadowrocket/adblock.conf"]
+      ];
+
+      // Each row: [label, tags, text to copy]. Shadowrocket rows copy the whole rule line.
+      var DATA = {
+        adguard: [
+          { title: "推荐组合", note: "4 条足够", rec: true, rows: [
+            ["217heidai 合并版 DNS 规则", ["推荐", "国内"], "https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockdns.txt"],
+            ["anti-AD", ["推荐", "国内"], "https://anti-ad.net/adguard.txt"],
+            ["AdGuard 官方 DNS 过滤器", ["推荐"], "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt"],
+            ["HaGeZi Pro", ["推荐"], "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt"]
+          ]},
+          { title: "DNS 级", note: "AdGuard Home / AdGuard DNS / 客户端 DNS 过滤", rows: [
+            ["217heidai Lite（只含国内常用，体积小，适合路由器）", [], "https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockdnslite.txt"],
+            ["anti-AD GitHub 源（anti-ad.net 打不开时用）", [], "https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-adguard.txt"],
+            ["HaGeZi Ultimate", ["激进"], "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt"],
+            ["OISD Big", [], "https://big.oisd.nl"],
+            ["OISD Small", [], "https://small.oisd.nl"],
+            ["Cats-Team AdRules DNS", [], "https://raw.githubusercontent.com/Cats-Team/AdRules/main/dns.txt"],
+            ["GOODBYEADS DNS", ["国内"], "https://raw.githubusercontent.com/8680/GOODBYEADS/master/data/rules/dns.txt"],
+            ["NEO DEV HOST", [], "https://raw.githubusercontent.com/neodevpro/neodevhost/master/adblocker"],
+            ["1Hosts Lite", [], "https://raw.githubusercontent.com/badmojr/1Hosts/master/Lite/adblock.txt"],
+            ["1Hosts Xtra", ["激进"], "https://github.com/badmojr/1Hosts/releases/download/latest/1hosts-Xtra_adblock.txt"],
+            ["hBlock", [], "https://hblock.molinero.dev/hosts_adblock.txt"],
+            ["yhosts（hosts 格式）", ["国内"], "https://raw.githubusercontent.com/VeleSila/yhosts/master/hosts.txt"],
+            ["秋风广告规则 AWAvenue，体积很小", ["国内"], "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/AWAvenue-Ads-Rule.txt"],
+            ["REIJI007 合集 DNS Lite", [], "https://raw.githubusercontent.com/REIJI007/Adblock-Rule-Collection/main/ADBLOCK_RULE_COLLECTION_DNS_Lite.txt"],
+            ["StevenBlack hosts（hosts 格式，国际通用）", [], "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"],
+            ["blackmatrix7 Advertising（AdGuard 格式）", [], "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/AdGuard/Advertising/Advertising.txt"],
+            ["DandelionSprout 反恶意网站（AdGuard Home 专版）", [], "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareAdGuardHome.txt"],
+            ["NoCoin 挖矿脚本拦截", [], "https://raw.githubusercontent.com/hoshsadiq/adblock-nocoin-list/master/nocoin.txt"]
+          ]},
+          { title: "浏览器级", note: "含元素隐藏，AdGuard App / 浏览器扩展用；AdGuard Home 里只生效域名部分", rows: [
+            ["217heidai 完整版", ["浏览器"], "https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockfilters.txt"],
+            ["GOODBYEADS 完整版", ["浏览器", "国内"], "https://raw.githubusercontent.com/8680/GOODBYEADS/master/data/rules/adblock.txt"],
+            ["Cats-Team AdRules ABP", ["浏览器"], "https://raw.githubusercontent.com/Cats-Team/AdRules/main/adblock_plus.txt"],
+            ["anti-AD EasyList 版", ["浏览器"], "https://anti-ad.net/easylist.txt"],
+            ["AdGuard 官方中文过滤器", ["浏览器"], "https://filters.adtidy.org/extension/ublock/filters/224.txt"],
+            ["AdGuard 官方基础过滤器", ["浏览器"], "https://filters.adtidy.org/extension/ublock/filters/2_without_easylist.txt"],
+            ["EasyList China + EasyList", ["浏览器"], "https://easylist-downloads.adblockplus.org/easylistchina+easylist.txt"],
+            ["CJX's Annoyance List（去烦人元素，配合 EasyList China 用）", ["浏览器"], "https://raw.githubusercontent.com/cjx82630/cjxlist/master/cjx-annoyance.txt"],
+            ["乘风广告过滤规则", ["浏览器"], "https://raw.githubusercontent.com/xinggsf/Adblock-Plus-Rule/master/rule.txt"]
+          ]}
+        ],
+        clash: [
+          { title: "推荐组合", note: "完整配置里默认开启", rec: true, rows: [
+            ["cn-ads · 217heidai 合并规则（国内友好）", ["mrs"], "https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockmihomo.mrs"],
+            ["reject_non_ip · Sukka 非 IP 类", [], "https://ruleset.skk.moe/Clash/non_ip/reject.txt"],
+            ["reject_domainset · Sukka 域名集", [], "https://ruleset.skk.moe/Clash/domainset/reject.txt"],
+            ["reject_ip · Sukka IP 类", ["放 MATCH 前"], "https://ruleset.skk.moe/Clash/ip/reject.txt"],
+            ["app-ads · blackmatrix7 Advertising（App 广告，带关键词）", [], "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising.yaml"]
+          ]},
+          { title: "可选", note: "按需去掉注释", rows: [
+            ["cn-ads-lite · 217heidai Lite，路由器/低内存设备用", ["mrs"], "https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockmihomolite.mrs"],
+            ["anti-ads · anti-AD（anti-ad.net 有 Cloudflare 验证）", [], "https://anti-ad.net/clash.yaml"],
+            ["anti-ads · anti-AD GitHub 源（拉不到时用）", [], "https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-clash.yaml"],
+            ["privacy · blackmatrix7 隐私追踪", [], "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Privacy/Privacy.yaml"],
+            ["adrules · Cats-Team AdRules", ["mrs"], "https://raw.githubusercontent.com/Cats-Team/AdRules/main/adrules-mihomo.mrs"],
+            ["rule-merger · xndeye 合并 reject", ["mrs"], "https://raw.githubusercontent.com/xndeye/rule-merger/refs/heads/release/reject.mrs"],
+            ["rule-merger · xndeye 合并 reject（yaml 版）", [], "https://raw.githubusercontent.com/xndeye/rule-merger/refs/heads/release/reject.yaml"],
+            ["reject · Loyalsoldier", [], "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt"],
+            ["surfboard-ad", [], "https://getsurfboard.com/adblock.txt"],
+            ["xkww3n", [], "https://rules.xkww3n.cyou/yaml/reject.yaml"],
+            ["neodevhost", [], "https://raw.githubusercontent.com/neodevpro/neodevhost/master/clash"],
+            ["awavenue · 秋风广告规则，体积很小", ["mrs"], "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-Clash.mrs"],
+            ["reject_non_ip_no_drop · Sukka", [], "https://ruleset.skk.moe/Clash/non_ip/reject-no-drop.txt"],
+            ["reject_non_ip_drop · Sukka", ["REJECT-DROP"], "https://ruleset.skk.moe/Clash/non_ip/reject-drop.txt"],
+            ["reject_extra_domainset · 与 reject_domainset 同开会很吃内存", [], "https://ruleset.skk.moe/Clash/domainset/reject_extra.txt"],
+            ["sogouinput · 搜狗输入法上报", [], "https://ruleset.skk.moe/Clash/non_ip/sogouinput.txt"],
+            ["adguard_block · 11 MB，大", [], "https://raw.githubusercontent.com/AyraHikari/openclash_adguard/main/rules/adguard_block.yaml"],
+            ["adblock · REIJI007，建议用 mrs", ["mrs"], "https://raw.githubusercontent.com/REIJI007/AdBlock_Rule_For_Clash/main/adblock_reject.mrs"],
+            ["adblock · REIJI007 classical yaml 版，27 MB", [], "https://raw.githubusercontent.com/REIJI007/AdBlock_Rule_For_Clash/main/adblock_reject.yaml"],
+            ["metacubex-ads · MetaCubeX geosite category-ads-all，很小，mihomo 官方规则库", ["mrs"], "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ads-all.mrs"],
+            ["dustinwin-ads · DustinWin ads", ["mrs"], "https://raw.githubusercontent.com/DustinWin/ruleset_geodata/mihomo-ruleset/ads.mrs"],
+            ["app-ads-lite · blackmatrix7 AdvertisingLite", [], "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AdvertisingLite/AdvertisingLite.yaml"],
+            ["ACL4SSR-BanAD", [], "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanAD.yaml"],
+            ["ACL4SSR-BanProgramAD", [], "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanProgramAD.yaml"],
+            ["ACL4SSR-BanEasyListChina", [], "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanEasyListChina.yaml"]
+          ]}
+        ],
+        sr: [
+          { title: "推荐组合", note: "粘到 [Rule] 段最前", rec: true, rule: true, rows: [
+            ["Sukka 非 IP 类", [], "RULE-SET,https://ruleset.skk.moe/List/non_ip/reject.conf,REJECT"],
+            ["Sukka 域名集", [], "DOMAIN-SET,https://ruleset.skk.moe/List/domainset/reject.conf,REJECT"],
+            ["217heidai 合并规则（国内友好）", [], "DOMAIN-SET,https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblocksurge.list,REJECT"],
+            ["blackmatrix7 Shadowrocket 广告", [], "RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Advertising/Advertising.list,REJECT"]
+          ]},
+          { title: "IP 类", note: "放在 FINAL 前，属于推荐组合", rec: true, rule: true, rows: [
+            ["Sukka IP 类", [], "RULE-SET,https://ruleset.skk.moe/List/ip/reject.conf,REJECT"]
+          ]},
+          { title: "可选", note: "原文件里已注释", rule: true, rows: [
+            ["217heidai Lite", [], "DOMAIN-SET,https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblocksurgelite.list,REJECT"],
+            ["anti-AD 域名集", ["二选一"], "DOMAIN-SET,https://anti-ad.net/surge2.txt,REJECT"],
+            ["anti-AD 规则版", ["二选一"], "RULE-SET,https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-surge.txt,REJECT"],
+            ["blackmatrix7 广告 Lite", [], "RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/AdvertisingLite/AdvertisingLite.list,REJECT"],
+            ["blackmatrix7 隐私", [], "RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Privacy/Privacy.list,REJECT"],
+            ["Sukka extra 域名集（大）", [], "DOMAIN-SET,https://ruleset.skk.moe/List/domainset/reject_extra.conf,REJECT"],
+            ["Sukka drop", ["REJECT-DROP"], "RULE-SET,https://ruleset.skk.moe/List/non_ip/reject-drop.conf,REJECT-DROP"],
+            ["Sukka no-drop", [], "RULE-SET,https://ruleset.skk.moe/List/non_ip/reject-no-drop.conf,REJECT"],
+            ["Sukka 搜狗输入法", [], "RULE-SET,https://ruleset.skk.moe/List/non_ip/sogouinput.conf,REJECT"],
+            ["Loyalsoldier", [], "DOMAIN-SET,https://cdn.jsdelivr.net/gh/Loyalsoldier/surge-rules@release/reject.txt,REJECT"],
+            ["Cats-Team AdRules 规则版", ["二选一"], "RULE-SET,https://raw.githubusercontent.com/Cats-Team/AdRules/main/adrules.list,REJECT"],
+            ["Cats-Team AdRules 域名集版", ["二选一"], "DOMAIN-SET,https://raw.githubusercontent.com/Cats-Team/AdRules/main/adrules_surge_domainset.txt,REJECT"],
+            ["秋风广告规则 AWAvenue（很小）", [], "RULE-SET,https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-Surge-RULE-SET.list,REJECT"],
+            ["ACL4SSR BanAD", [], "RULE-SET,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list,REJECT"],
+            ["ACL4SSR BanProgramAD", [], "RULE-SET,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanProgramAD.list,REJECT"],
+            ["ACL4SSR BanEasyListChina", [], "RULE-SET,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanEasyListChina.list,REJECT"]
+          ]},
+          { title: "模块与整份配置", note: "模块在「配置 → 模块」里添加，不用粘到 [Rule]", rows: [
+            ["GMOogway 拦截模块", ["模块"], "https://raw.githubusercontent.com/GMOogway/shadowrocket-rules/master/sr_reject_list.module"],
+            ["毒奶网页去广告", ["模块"], "https://raw.githubusercontent.com/limbopro/Adblock4limbo/main/Adblock4limbo.sgmodule"],
+            ["Johnshall 去广告版整份配置（会替换你的配置）", ["整份配置"], "https://raw.githubusercontent.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever/release/sr_ad_only.conf"]
+          ]}
+        ]
+      };
+
+      (function () {
+        var toastEl = document.getElementById("toast"), toastTimer;
+        function toast(msg) {
+          toastEl.textContent = msg;
+          toastEl.classList.add("is-on");
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () { toastEl.classList.remove("is-on"); }, 1600);
+        }
+
+        var modal = document.getElementById("modal"), modalText = document.getElementById("modal-text"), lastFocus;
+        function openModal(text) {
+          lastFocus = document.activeElement;
+          modalText.value = text;
+          modal.hidden = false;
+          modalText.focus();
+          modalText.select();
+          try { modalText.setSelectionRange(0, text.length); } catch (e) {}
+        }
+        function closeModal() {
+          modal.hidden = true;
+          if (lastFocus) lastFocus.focus();
+        }
+        document.getElementById("modal-close").addEventListener("click", closeModal);
+        modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
+        document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !modal.hidden) closeModal(); });
+
+        function legacyCopy(text) {
+          var ta = document.createElement("textarea"), ok = false;
+          ta.value = text;
+          ta.setAttribute("readonly", "");
+          ta.style.position = "fixed";
+          ta.style.top = "0";
+          ta.style.left = "0";
+          ta.style.opacity = "0";
+          ta.style.fontSize = "16px";
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          try { ta.setSelectionRange(0, text.length); } catch (e) {}
+          try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+          document.body.removeChild(ta);
+          return ok;
+        }
+
+        function copyText(text, msg, button) {
+          var label = button ? button.textContent : "";
+          if (button) {
+            clearTimeout(button._t);
+            if (!button._label) button._label = label;
+            button.textContent = "复制中…";
+            button.setAttribute("aria-busy", "true");
+          }
+          function done(ok) {
+            if (!button) return;
+            button.removeAttribute("aria-busy");
+            button.textContent = ok ? "✓ 已复制" : button._label;
+            button._t = setTimeout(function () { button.textContent = button._label; }, 1600);
+          }
+          function fallback() {
+            if (legacyCopy(text)) { toast(msg); done(true); }
+            else { done(false); openModal(text); }
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            var timer = new Promise(function (_, reject) { setTimeout(reject, 600); });
+            Promise.race([navigator.clipboard.writeText(text), timer]).then(function () { toast(msg); done(true); }, fallback);
+          } else {
+            fallback();
+          }
+        }
+
+        function urlOf(line) { return /^(RULE-SET|DOMAIN-SET),/.test(line) ? line.split(",")[1] : line; }
+
+        function el(tag, cls, text) {
+          var n = document.createElement(tag);
+          if (cls) n.className = cls;
+          if (text != null) n.textContent = text;
+          return n;
+        }
+        function btn(label, copy, aria) {
+          var b = el("button", "btn x-act", label);
+          b.type = "button";
+          b.setAttribute("data-copy", copy);
+          if (aria) b.setAttribute("aria-label", aria);
+          return b;
+        }
+        function row(label, tags, text, isRule) {
+          var li = el("li", "x-row");
+          var body = el("div");
+          var p = el("p", "x-row__label");
+          p.appendChild(el("span", null, label));
+          tags.forEach(function (t) { p.appendChild(el("span", "pill", t)); });
+          body.appendChild(p);
+          body.appendChild(el("p", "x-row__url", text));
+          var acts = el("div", "x-row__acts");
+          if (isRule) {
+            acts.appendChild(btn("复制规则", text, "复制规则行：" + label));
+            acts.appendChild(btn("仅 URL", urlOf(text), "只复制链接：" + label));
+          } else {
+            acts.appendChild(btn("复制", text, "复制链接：" + label));
+          }
+          li.appendChild(body);
+          li.appendChild(acts);
+          li.setAttribute("data-search", (label + " " + tags.join(" ") + " " + text).toLowerCase());
+          return li;
+        }
+
+        var repo = document.getElementById("repo-files");
+        REPO.forEach(function (r) {
+          var li = row(r[0], [], r[2], false);
+          li.querySelector(".x-row__url").textContent = r[1];
+          li.removeAttribute("data-search");
+          repo.appendChild(li);
+        });
+
+        var total = 0;
+        Object.keys(DATA).forEach(function (key) {
+          var box = document.querySelector('.x-groups[data-client="' + key + '"]');
+          DATA[key].forEach(function (g) {
+            var wrap = el("div", "x-group");
+            var h = el("h3", "x-group__title");
+            h.appendChild(el("span", null, g.title));
+            h.appendChild(el("span", "pill", g.rows.length + " 条"));
+            if (g.note) h.appendChild(el("small", null, g.note));
+            wrap.appendChild(h);
+            var ul = el("ul", "x-list");
+            g.rows.forEach(function (r) { ul.appendChild(row(r[0], r[1], r[2], !!g.rule)); total++; });
+            wrap.appendChild(ul);
+            box.appendChild(wrap);
+          });
+        });
+        document.getElementById("total").textContent = total;
+
+        document.addEventListener("click", function (e) {
+          var b = e.target.closest("[data-copy]");
+          if (b) { copyText(b.getAttribute("data-copy"), "已复制", b); return; }
+          var r = e.target.closest("[data-rec]");
+          if (r) {
+            var lines = [];
+            DATA[r.getAttribute("data-rec")].forEach(function (g) {
+              if (g.rec) g.rows.forEach(function (x) { lines.push(x[2]); });
+            });
+            copyText(lines.join("\n"), "已复制 " + lines.length + " 条", r);
+          }
+        });
+
+        document.getElementById("copy-yaml").addEventListener("click", function () {
+          var t = document.getElementById("clash-yaml").textContent;
+          copyText(t, "已复制完整配置", this);
+        });
+
+        var q = document.getElementById("q"), count = document.getElementById("q-count");
+        function filter() {
+          var term = q.value.trim().toLowerCase(), shown = 0;
+          document.querySelectorAll(".x-groups").forEach(function (box) {
+            var inBox = 0;
+            box.querySelectorAll(".x-group").forEach(function (g) {
+              var n = 0;
+              g.querySelectorAll(".x-row").forEach(function (li) {
+                var hit = !term || li.getAttribute("data-search").indexOf(term) !== -1;
+                li.hidden = !hit;
+                if (hit) n++;
+              });
+              g.hidden = n === 0;
+              inBox += n;
+            });
+            box.parentNode.querySelector(".x-empty").hidden = inBox > 0;
+            shown += inBox;
+          });
+          count.textContent = term ? "找到 " + shown + " 条" : "共 " + total + " 条，可按名称或链接筛选";
+        }
+        q.addEventListener("input", filter);
+        filter();
+      })();
+    </script>
+  </body>
+</html>
