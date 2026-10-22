@@ -42,6 +42,14 @@ https://raw.githubusercontent.com/VeleSila/yhosts/master/hosts.txt
 https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/AWAvenue-Ads-Rule.txt
 # REIJI007 合集 DNS Lite
 https://raw.githubusercontent.com/REIJI007/Adblock-Rule-Collection/main/ADBLOCK_RULE_COLLECTION_DNS_Lite.txt
+# StevenBlack hosts（hosts 格式，国际通用）
+https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+# blackmatrix7 Advertising（AdGuard 格式）
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/AdGuard/Advertising/Advertising.txt
+# DandelionSprout 反恶意网站（AdGuard Home 专版）
+https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareAdGuardHome.txt
+# NoCoin 挖矿脚本拦截
+https://raw.githubusercontent.com/hoshsadiq/adblock-nocoin-list/master/nocoin.txt
 
 ## ---- 浏览器级（含元素隐藏，AdGuard App / 浏览器扩展用，AdGuard Home 里加了也只生效域名部分）----
 # 217heidai 完整版
@@ -52,3 +60,13 @@ https://raw.githubusercontent.com/8680/GOODBYEADS/master/data/rules/adblock.txt
 https://raw.githubusercontent.com/Cats-Team/AdRules/main/adblock_plus.txt
 # anti-AD EasyList 版
 https://anti-ad.net/easylist.txt
+# AdGuard 官方中文过滤器
+https://filters.adtidy.org/extension/ublock/filters/224.txt
+# AdGuard 官方基础过滤器
+https://filters.adtidy.org/extension/ublock/filters/2_without_easylist.txt
+# EasyList China + EasyList
+https://easylist-downloads.adblockplus.org/easylistchina+easylist.txt
+# CJX's Annoyance List（去烦人元素，配合 EasyList China 用）
+https://raw.githubusercontent.com/cjx82630/cjxlist/master/cjx-annoyance.txt
+# 乘风广告过滤规则
+https://raw.githubusercontent.com/xinggsf/Adblock-Plus-Rule/master/rule.txt
