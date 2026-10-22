@@ -24,329 +24,141 @@ https://small.oisd.nl
 https://raw.githubusercontent.com/Cats-Team/AdRules/main/adblock_plus.txt
 
 clash去广告规则
-  anti-ads:
-    type: http
-    behavior: domain
-    url: https://anti-ad.net/clash.yaml
-    path: ./ruleset/anti-ads.yaml
-    interval: 86400
 
-  privacy:
-    type: http
-    behavior: domain
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Privacy/Privacy.yaml
-    path: ./ruleset/privacy.yaml
-    interval: 86400
+  #   behavior: domain
+  #   format: mrs
+  #   url: https://raw.githubusercontent.com/xndeye/rule-merger/refs/heads/release/reject.mrs
+  #   # yaml 版：https://raw.githubusercontent.com/xndeye/rule-merger/refs/heads/release/reject.yaml
+  #   path: ./ruleset/rule-merger.mrs
+  #   interval: 86400
 
-  app-ads:
-    type: http
-    behavior: classical
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising.yaml
-    path: ./ruleset/app-ads.yaml
-    interval: 86400
+  # reject:                     # Loyalsoldier
+  #   type: http
+  #   behavior: domain
+  #   url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt
+  #   path: ./ruleset/reject.yaml
+  #   interval: 86400
 
-  cn-ads:
-    type: http
-    behavior: domain
-    url: https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockmihomo.yaml
-    path: ./ruleset/cn-ads.yaml
-    interval: 86400
+  # surfboard-ad:
+  #   type: http
+  #   behavior: domain
+  #   format: text
+  #   url: https://getsurfboard.com/adblock.txt
+  #   path: ./ruleset/surfboard-ad.txt
+  #   interval: 86400
 
-  rule-merger:
-    type: http
-    behavior: domain
-    url: "https://raw.githubusercontent.com/xndeye/rule-merger/refs/heads/release/reject.yaml"
-    path: ./ruleset/rule-merger.yaml
-    interval: 86400
+  # xkww3n:
+  #   type: http
+  #   behavior: domain
+  #   url: https://rules.xkww3n.cyou/yaml/reject.yaml
+  #   path: ./ruleset/xkww3n.yaml
+  #   interval: 86400
 
-  reject:
-    type: http
-    behavior: domain
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt"
-    path: ./ruleset/reject.yaml
-    interval: 86400
+  # neodevhost:
+  #   type: http
+  #   behavior: domain
+  #   url: https://raw.githubusercontent.com/neodevpro/neodevhost/master/clash
+  #   path: ./ruleset/neodevhost.yaml
+  #   interval: 86400
 
-  surfboard-ad:
-    type: http
-    behavior: domain
-    format: text
-    url: "https://getsurfboard.com/adblock.txt"
-    path: ./ruleset/surfboard-ad.txt
-    interval: 86400
+  # awavenue:                   # 秋风广告规则，体积很小
+  #   type: http
+  #   behavior: domain
+  #   format: mrs
+  #   url: https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-Clash.mrs
+  #   path: ./ruleset/awavenue.mrs
+  #   interval: 86400
+
+  # reject_non_ip_no_drop:
+  #   type: http
+  #   behavior: classical
+  #   format: text
+  #   url: https://ruleset.skk.moe/Clash/non_ip/reject-no-drop.txt
+  #   path: ./sukkaw_ruleset/reject_non_ip_no_drop.txt
+  #   interval: 43200
+
+  # reject_non_ip_drop:
+  #   type: http
+  #   behavior: classical
+  #   format: text
+  #   url: https://ruleset.skk.moe/Clash/non_ip/reject-drop.txt
+  #   path: ./sukkaw_ruleset/reject_non_ip_drop.txt
+  #   interval: 43200
+
+  # reject_extra_domainset:     # 与 reject_domainset 同开会很吃内存
+  #   type: http
+  #   behavior: domain
+  #   format: text
+  #   url: https://ruleset.skk.moe/Clash/domainset/reject_extra.txt
+  #   path: ./sukkaw_ruleset/reject_domainset_extra.txt
+  #   interval: 43200
+
+  # sogouinput:                 # 搜狗输入法上报
+  #   type: http
+  #   behavior: classical
+  #   format: text
+  #   url: https://ruleset.skk.moe/Clash/non_ip/sogouinput.txt
+  #   path: ./sukkaw_ruleset/sogouinput.txt
+  #   interval: 43200
+
+  # adguard_block:              # 11 MB，大
+  #   type: http
+  #   behavior: classical
+  #   url: https://raw.githubusercontent.com/AyraHikari/openclash_adguard/main/rules/adguard_block.yaml
+  #   path: ./ruleset/adguard_block.yaml
+  #   interval: 43200
+
+  # adblock:                    # REIJI007，27 MB yaml，建议用 mrs
+  #   type: http
+  #   behavior: domain
+  #   format: mrs
+  #   url: https://raw.githubusercontent.com/REIJI007/AdBlock_Rule_For_Clash/main/adblock_reject.mrs
+  #   # classical yaml 版：https://raw.githubusercontent.com/REIJI007/AdBlock_Rule_For_Clash/main/adblock_reject.yaml
+  #   path: ./ruleset/adblock_reject.mrs
+  #   interval: 86400
+
+  # ACL4SSR-BanAD:
+  #   type: http
+  #   behavior: classical
+  #   format: yaml
+  #   url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanAD.yaml
+  #   path: ./rules/ACL4SSR-BanAD.yaml
+  #   interval: 86400
+
+  # ACL4SSR-BanProgramAD:
+  #   type: http
+  #   behavior: classical
+  #   format: yaml
+  #   url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanProgramAD.yaml
+  #   path: ./rules/ACL4SSR-BanProgramAD.yaml
+  #   interval: 86400
+
+  # ACL4SSR-BanEasyListChina:
+  #   type: http
+  #   behavior: classical
+  #   format: yaml
+  #   url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanEasyListChina.yaml
+  #   path: ./rules/ACL4SSR-BanEasyListChina.yaml
+  #   interval: 86400
+
+rules:
+  # 去广告放在最前面
+  - RULE-SET,reject_non_ip,REJECT
+  - RULE-SET,reject_domainset,REJECT
+  - RULE-SET,cn-ads,REJECT
+  - RULE-SET,app-ads,REJECT
+  # 开了上面的可选源，在这里补对应行，例如：
+  # - RULE-SET,anti-ads,REJECT
+  # - RULE-SET,privacy,REJECT
+  # - RULE-SET,reject_non_ip_drop,REJECT-DROP
+  # - RULE-SET,reject_non_ip_no_drop,REJECT
+  # - RULE-SET,ACL4SSR-BanProgramAD,REJECT
+  # ……你原来的分流规则……
+  # IP 类规则放在域名规则之后、MATCH 之前
+  - RULE-SET,reject_ip,REJECT    
+
     
-  xkww3n:
-    type: http
-    behavior: domain
-    path: ./ruleset/xkww3n.yaml
-    url: https://rules.xkww3n.cyou/yaml/reject.yaml
-    interval: 86400
 
-  reject_non_ip_no_drop:
-    type: http
-    behavior: classical
-    format: text
-    interval: 43200
-    url: https://ruleset.skk.moe/Clash/non_ip/reject-no-drop.txt
-    path: ./sukkaw_ruleset/reject_non_ip_no_drop.txt
-    
-  reject_non_ip_drop:
-    type: http
-    behavior: classical
-    format: text
-    interval: 43200
-    url: https://ruleset.skk.moe/Clash/non_ip/reject-drop.txt
-    path: ./sukkaw_ruleset/reject_non_ip_drop.txt
-    
-  reject_non_ip:
-    type: http
-    behavior: classical
-    format: text
-    interval: 43200
-    url: https://ruleset.skk.moe/Clash/non_ip/reject.txt
-    path: ./sukkaw_ruleset/reject_non_ip.txt
-    
-  reject_domainset:
-    type: http
-    behavior: domain
-    format: text
-    interval: 43200
-    url: https://ruleset.skk.moe/Clash/domainset/reject.txt
-    path: ./sukkaw_ruleset/reject_domainset.txt
-  # 在 Clash 上，同时启用基础和额外的拦截域名会导致内存占用过高和匹配用时增加等性能问题
-  reject_extra_domainset:
-    type: http
-    behavior: domain
-    format: text
-    interval: 43200
-    url: https://ruleset.skk.moe/Clash/domainset/reject_extra.txt
-    path: ./sukkaw_ruleset/reject_domainset_extra.txt
-    
-  reject_ip:
-    type: http
-    behavior: classical
-    format: text
-    interval: 43200
-    url: https://ruleset.skk.moe/Clash/ip/reject.txt
-    path: ./sukkaw_ruleset/reject_ip.txt
-
-  sogouinput:
-    type: http
-    behavior: classical
-    format: text
-    interval: 43200
-    url: https://ruleset.skk.moe/Clash/non_ip/sogouinput.txt
-    path: ./sukkaw_ruleset/sogouinput.txt
-
-  adguard_block:
-    type: http
-    behavior: classical
-    path: ./ruleset/adguard_block.yaml
-    url: https://raw.githubusercontent.com/AyraHikari/openclash_adguard/main/rules/adguard_block.yaml
-    interval: 43200
-    
-  adblock:
-    type: http
-    behavior: classical
-    url: https://raw.githubusercontent.com/REIJI007/AdBlock_Rule_For_Clash/main/adblock_reject.yaml
-    path: ./ruleset/adblock_reject.yaml
-    interval: 86400
-    
-https://raw.githubusercontent.com/neodevpro/neodevhost/master/clash
-https://raw.githubusercontent.com/Cats-Team/AdRules/main/adrules-mihomo.mrs
-
-
-  ACL4SSR-BanAD:
-    type: http
-    behavior: classical
-    format: yaml
-    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanAD.yaml"
-    path: ./rules/ACL4SSR-BanAD.yaml
-    interval: 86400
-
-  ACL4SSR-BanProgramAD:
-    type: http
-    behavior: classical
-    format: yaml
-    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanProgramAD.yaml"
-    path: ./rules/ACL4SSR-BanProgramAD.yaml
-    interval: 86400
-
-  ACL4SSR-BanEasyListChina:
-    type: http
-    behavior: classical
-    format: yaml
-    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanEasyListChina.yaml"
-    path: ./rules/ACL4SSR-BanEasyListChina.yaml
-    interval: 86400adguard规则来源
-https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockdns.txt
-https://anti-ad.net/adguard.txt
-https://raw.githubusercontent.com/neodevpro/neodevhost/master/adblocker
-https://raw.githubusercontent.com/badmojr/1Hosts/master/Lite/adblock.txt
-https://hblock.molinero.dev/hosts_adblock.txt
-https://github.com/badmojr/1Hosts/releases/download/latest/1hosts-Xtra_adblock.txt
-https://raw.githubusercontent.com/8680/GOODBYEADS/master/data/rules/adblock.txt
-https://raw.githubusercontent.com/VeleSila/yhosts/master/hosts.txt
-https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt
-https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt
-https://big.oisd.nl
-https://small.oisd.nl
-https://raw.githubusercontent.com/Cats-Team/AdRules/main/adblock_plus.txt
-
-clash去广告规则
-  anti-ads:
-    type: http
-    behavior: domain
-    url: https://anti-ad.net/clash.yaml
-    path: ./ruleset/anti-ads.yaml
-    interval: 86400
-
-  privacy:
-    type: http
-    behavior: domain
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Privacy/Privacy.yaml
-    path: ./ruleset/privacy.yaml
-    interval: 86400
-
-  app-ads:
-    type: http
-    behavior: classical
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising.yaml
-    path: ./ruleset/app-ads.yaml
-    interval: 86400
-
-  cn-ads:
-    type: http
-    behavior: domain
-    url: https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockmihomo.yaml
-    path: ./ruleset/cn-ads.yaml
-    interval: 86400
-
-  rule-merger:
-    type: http
-    behavior: domain
-    url: "https://raw.githubusercontent.com/xndeye/rule-merger/refs/heads/release/reject.yaml"
-    path: ./ruleset/rule-merger.yaml
-    interval: 86400
-
-  reject:
-    type: http
-    behavior: domain
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt"
-    path: ./ruleset/reject.yaml
-    interval: 86400
-
-  surfboard-ad:
-    type: http
-    behavior: domain
-    format: text
-    url: "https://getsurfboard.com/adblock.txt"
-    path: ./ruleset/surfboard-ad.txt
-    interval: 86400
-    
-  xkww3n:
-    type: http
-    behavior: domain
-    path: ./ruleset/xkww3n.yaml
-    url: https://rules.xkww3n.cyou/yaml/reject.yaml
-    interval: 86400
-
-  reject_non_ip_no_drop:
-    type: http
-    behavior: classical
-    format: text
-    interval: 43200
-    url: https://ruleset.skk.moe/Clash/non_ip/reject-no-drop.txt
-    path: ./sukkaw_ruleset/reject_non_ip_no_drop.txt
-    
-  reject_non_ip_drop:
-    type: http
-    behavior: classical
-    format: text
-    interval: 43200
-    url: https://ruleset.skk.moe/Clash/non_ip/reject-drop.txt
-    path: ./sukkaw_ruleset/reject_non_ip_drop.txt
-    
-  reject_non_ip:
-    type: http
-    behavior: classical
-    format: text
-    interval: 43200
-    url: https://ruleset.skk.moe/Clash/non_ip/reject.txt
-    path: ./sukkaw_ruleset/reject_non_ip.txt
-    
-  reject_domainset:
-    type: http
-    behavior: domain
-    format: text
-    interval: 43200
-    url: https://ruleset.skk.moe/Clash/domainset/reject.txt
-    path: ./sukkaw_ruleset/reject_domainset.txt
-  # 在 Clash 上，同时启用基础和额外的拦截域名会导致内存占用过高和匹配用时增加等性能问题
-  reject_extra_domainset:
-    type: http
-    behavior: domain
-    format: text
-    interval: 43200
-    url: https://ruleset.skk.moe/Clash/domainset/reject_extra.txt
-    path: ./sukkaw_ruleset/reject_domainset_extra.txt
-    
-  reject_ip:
-    type: http
-    behavior: classical
-    format: text
-    interval: 43200
-    url: https://ruleset.skk.moe/Clash/ip/reject.txt
-    path: ./sukkaw_ruleset/reject_ip.txt
-
-  sogouinput:
-    type: http
-    behavior: classical
-    format: text
-    interval: 43200
-    url: https://ruleset.skk.moe/Clash/non_ip/sogouinput.txt
-    path: ./sukkaw_ruleset/sogouinput.txt
-
-  adguard_block:
-    type: http
-    behavior: classical
-    path: ./ruleset/adguard_block.yaml
-    url: https://raw.githubusercontent.com/AyraHikari/openclash_adguard/main/rules/adguard_block.yaml
-    interval: 43200
-    
-  adblock:
-    type: http
-    behavior: classical
-    url: https://raw.githubusercontent.com/REIJI007/AdBlock_Rule_For_Clash/main/adblock_reject.yaml
-    path: ./ruleset/adblock_reject.yaml
-    interval: 86400
-    
-https://raw.githubusercontent.com/neodevpro/neodevhost/master/clash
-https://raw.githubusercontent.com/Cats-Team/AdRules/main/adrules-mihomo.mrs
-
-
-  ACL4SSR-BanAD:
-    type: http
-    behavior: classical
-    format: yaml
-    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanAD.yaml"
-    path: ./rules/ACL4SSR-BanAD.yaml
-    interval: 86400
-
-  ACL4SSR-BanProgramAD:
-    type: http
-    behavior: classical
-    format: yaml
-    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanProgramAD.yaml"
-    path: ./rules/ACL4SSR-BanProgramAD.yaml
-    interval: 86400
-
-  ACL4SSR-BanEasyListChina:
-    type: http
-    behavior: classical
-    format: yaml
-    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanEasyListChina.yaml"
-    path: ./rules/ACL4SSR-BanEasyListChina.yaml
-    interval: 86400
 
 按客户端分好类，链接都是各作者的成品订阅地址，自动随上游更新。每个文件顶部是推荐组合，其余按需打开。
 
