@@ -171,6 +171,29 @@ rule-providers:
   #   path: ./ruleset/adblock_reject.mrs
   #   interval: 86400
 
+  # metacubex-ads:             # MetaCubeX geosite category-ads-all，很小，mihomo 官方规则库
+  #   type: http
+  #   behavior: domain
+  #   format: mrs
+  #   url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ads-all.mrs
+  #   path: ./ruleset/metacubex-ads.mrs
+  #   interval: 86400
+
+  # dustinwin-ads:              # DustinWin ads
+  #   type: http
+  #   behavior: domain
+  #   format: mrs
+  #   url: https://raw.githubusercontent.com/DustinWin/ruleset_geodata/mihomo-ruleset/ads.mrs
+  #   path: ./ruleset/dustinwin-ads.mrs
+  #   interval: 86400
+
+  # app-ads-lite:               # blackmatrix7 AdvertisingLite
+  #   type: http
+  #   behavior: classical
+  #   url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AdvertisingLite/AdvertisingLite.yaml
+  #   path: ./ruleset/app-ads-lite.yaml
+  #   interval: 86400
+
   # ACL4SSR-BanAD:
   #   type: http
   #   behavior: classical
