@@ -2,7 +2,9 @@
 
 去广告规则订阅合集，按客户端分类。所有链接都指向各作者的成品订阅地址，随上游自动更新，本仓库不做二次加工。
 
-🔗 一键复制网页：<https://passionsu-su.github.io/adblock/>（源码在 [pages/](pages/)）
+🔗 一键复制网页：
+- GitHub Pages：<https://passionsu-su.github.io/adblock/>（源码在 [pages/](pages/)）
+- Hark 版：<https://hark.site/s/5660ee14-e0ae-4592-a366-ee03e763ebfb?hark_region=us>
 
 ## 📦 订阅文件
 
