@@ -1,0 +1,54 @@
+# AdGuard / AdGuard Home 去广告规则订阅合集
+# 用法：AdGuard Home → 过滤器 → DNS 黑名单 → 添加黑名单 → 添加自定义列表，逐条粘贴
+# 建议：同一档只选一个（hagezi pro 与 ultimate 二选一，oisd big 与 small 二选一），全开会大量重复、拖慢查询
+# 标记：[推荐] 日常够用  [国内] 偏中国大陆广告  [激进] 误杀概率高  [浏览器] 含元素隐藏，仅 AdGuard 客户端/浏览器扩展生效
+
+## ---- 推荐组合（4 条足够） ----
+# [推荐][国内] 217heidai 合并版 DNS 规则
+https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockdns.txt
+# [推荐][国内] anti-AD
+https://anti-ad.net/adguard.txt
+# [推荐] AdGuard 官方 DNS 过滤器
+https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt
+# [推荐] HaGeZi Pro
+https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt
+
+## ---- DNS 级（AdGuard Home / AdGuard DNS / 客户端 DNS 过滤）----
+# 217heidai Lite（只含国内常用，体积小，适合路由器）
+https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockdnslite.txt
+# anti-AD GitHub 源（anti-ad.net 打不开时用）
+https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-adguard.txt
+# HaGeZi Ultimate [激进]
+https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt
+# OISD Big
+https://big.oisd.nl
+# OISD Small
+https://small.oisd.nl
+# Cats-Team AdRules DNS
+https://raw.githubusercontent.com/Cats-Team/AdRules/main/dns.txt
+# GOODBYEADS DNS [国内]
+https://raw.githubusercontent.com/8680/GOODBYEADS/master/data/rules/dns.txt
+# NEO DEV HOST
+https://raw.githubusercontent.com/neodevpro/neodevhost/master/adblocker
+# 1Hosts Lite
+https://raw.githubusercontent.com/badmojr/1Hosts/master/Lite/adblock.txt
+# 1Hosts Xtra [激进]
+https://github.com/badmojr/1Hosts/releases/download/latest/1hosts-Xtra_adblock.txt
+# hBlock
+https://hblock.molinero.dev/hosts_adblock.txt
+# yhosts（hosts 格式）[国内]
+https://raw.githubusercontent.com/VeleSila/yhosts/master/hosts.txt
+# 秋风广告规则 AWAvenue [国内] 体积很小
+https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/AWAvenue-Ads-Rule.txt
+# REIJI007 合集 DNS Lite
+https://raw.githubusercontent.com/REIJI007/Adblock-Rule-Collection/main/ADBLOCK_RULE_COLLECTION_DNS_Lite.txt
+
+## ---- 浏览器级（含元素隐藏，AdGuard App / 浏览器扩展用，AdGuard Home 里加了也只生效域名部分）----
+# 217heidai 完整版
+https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockfilters.txt
+# GOODBYEADS 完整版 [国内]
+https://raw.githubusercontent.com/8680/GOODBYEADS/master/data/rules/adblock.txt
+# Cats-Team AdRules ABP
+https://raw.githubusercontent.com/Cats-Team/AdRules/main/adblock_plus.txt
+# anti-AD EasyList 版
+https://anti-ad.net/easylist.txt
