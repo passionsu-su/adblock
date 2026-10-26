@@ -1,0 +1,34 @@
+name: 拆分 MosDNS 去广告规则
+
+on:
+  schedule:
+    - cron: "30 */8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  split:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 下载并拆分
+        run: |
+          set -e
+          mkdir -p mosdns
+          curl -fsSL https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockmosdns.txt -o /tmp/all.txt
+          grep -v '^#' /tmp/all.txt | grep -v '^[[:space:]]*$' > /tmp/clean.txt
+          n=$(wc -l < /tmp/clean.txt)
+          if [ "$n" -lt 50000 ]; then echo "规则太少($n)，跳过"; exit 0; fi
+          h=$(( (n + 1) / 2 ))
+          head -n "$h" /tmp/clean.txt > mosdns/adblockmosdns_part1.txt
+          tail -n +"$((h + 1))" /tmp/clean.txt > mosdns/adblockmosdns_part2.txt
+          wc -l mosdns/*.txt
+      - name: 提交
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add mosdns
+          git diff --cached --quiet || git commit -m "更新 MosDNS 拆分规则"
+          git push
